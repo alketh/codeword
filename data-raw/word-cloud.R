@@ -45,7 +45,6 @@ agg_words <- data.frame(words = words) %>%
   filter(count > cutoff) %>% 
   arrange(desc(count))
 
-wordcloud2(agg_words, color = "random-light", backgroundColor = "black")
-png(filename = "codecloud.png", width = 1200, height = 800)
-
-
+pdf(file = "test.pdf")
+wordcloud2(agg_words, color = "random-dark")
+dev.off()
