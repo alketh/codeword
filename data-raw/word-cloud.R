@@ -1,5 +1,7 @@
 library("purrr")
 library("magrittr")
+library("wordcloud2")
+library("dplyr")
 
 # Let's create a word cloud using most of the available scripts
 dirs <- c("h:\\C\\phd\\atlantistools\\R\\",
@@ -28,5 +30,22 @@ nlines <- map_int(scripts, length) %>%
 words <- map(scripts, clean_script) %>% 
   unlist()
 
+# Remove single character words and numeric values!
+words <- words[stringr::str_length(words) != 1]
+words <- words[!grepl(pattern = "[0-9]", x = words)]
+words <- words[words != "wuwu"]
+words <- words[words != "species"]
+
+# Remove words with count of cutoff and less
+cutoff <- 20
+
+agg_words <- data.frame(words = words) %>% 
+  group_by(words) %>% 
+  summarise(count = n()) %>% 
+  filter(count > cutoff) %>% 
+  arrange(desc(count))
+
+wordcloud2(agg_words, color = "random-light", backgroundColor = "black")
+png(filename = "codecloud.png", width = 1200, height = 800)
 
 
